@@ -1,0 +1,8 @@
+forloop that loops through array
+outputs the current position - U44 = 44,0 - D45 = -1,0 - L44 = -1,-44
+Loop through both
+log every position that they hit and store those cordinates in a slice
+compare every position hit with each slice and add the matching cordinates into another slice
+At end of loop take new array and loop through to see which is closest to 0,0 by using the y + x = total
+
+Use an interface to store both arrays and numbers?
