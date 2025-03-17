@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-, vi: set ft=ruby :
+
+PLAYBOOK="/home/keith-quinn/projects/automation/psmdb-testing/psmdb/psmdb/playbooks/playbook.yml"
+
+servers=[
+     { :hostname => "deb11", :box => "bento/debian-11" },
+     { :hostname => "deb12", :box => "bento/debian-12" },
+     { :hostname => "focal3", :box => "bento/ubuntu-20.04" },
+     { :hostname => "jammy", :box => "bento/ubuntu-22.04" },
+     { :hostname => "noble1", :box => "bento/ubuntu-24.04" },
+     { :hostname => "rhel8", :box => "generic/centos8" },
+     { :hostname => "rhel9", :box => "generic/centos9s" },
+     { :hostname => "al2023", :box => "gbailey/al2023" },
+]
+
+Vagrant.configure("2") do |config|
+  # All Vagrant configuration is done here. The most pxb configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  config.vm.network "private_network", :type => 'dhcp', :adapter => 2
+#  config.ssh.username = "vagrant"
+#  config.ssh.password = "vagrant"
+
+  servers.each do |machine|
+    config.vm.define machine[:hostname] do |node|
+      node.vm.box = machine[:box]
+      node.vm.hostname = machine[:hostname]
+      node.vm.provider "virtualbox" do |vb|
+          vb.customize ["modifyvm", :id, "--cpus", 8]
+          vb.customize ["modifyvm", :id, "--memory", "16384", "--ioapic", "on"]
+#         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+#         vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      end
+
+#      config.vm.provision "ansible" do |ansible|
+#        ansible.playbook = PLAYBOOK
+#        ansible.become = "true"
+#        ansible.verbose = "vvvv"
+#        ansible.host_key_checking = "false"
+#      end
+      config.disksize.size = '400GB'
+      config.vm.synced_folder '.', '/vagrant', :disabled => true
+      config.vm.synced_folder '.', '/home/vagrant/sync', :disabled => true
+    end
+  end
+
+end
