@@ -1,2 +1,4 @@
 .idea/*
 scripts/vagrant/.vagrant
+*.pem
+*key
